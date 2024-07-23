@@ -4,6 +4,19 @@ use log::warn;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 use std::path::Path;
+
+const TODO_PREFIX: &str = "TODO:";
+
+fn trim_todo_prefix(line: &str) -> Option<String> {
+    let trimmed_line = line.trim();
+
+    if let Some(pos) = trimmed_line.find(TODO_PREFIX) {
+        Some(trimmed_line[(pos + TODO_PREFIX.len())..].to_string())
+    } else {
+        None
+    }
+}
+
 fn find_todos(path: &Path) -> io::Result<Vec<String>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
@@ -11,12 +24,16 @@ fn find_todos(path: &Path) -> io::Result<Vec<String>> {
 
     for line in reader.lines() {
         let line = line?;
-        if line.contains("TODO:") {
-            todos.push(format!(
-                "{}:{}",
-                path.display().to_string().cyan(),
-                line.trim().trim_start_matches("// TODO:")
-            ));
+
+        match trim_todo_prefix(&line) {
+            Some(new_line) => {
+                todos.push(format!(
+                    "{}:{}",
+                    path.display().to_string().cyan(),
+                    new_line
+                ));
+            }
+            None => continue,
         }
     }
 
