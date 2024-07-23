@@ -1,6 +1,6 @@
 use colored::*;
 use ignore::Walk;
-use log::error;
+use log::warn;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 use std::path::Path;
@@ -38,7 +38,7 @@ fn main() -> io::Result<()> {
                                     println!("{}", todo);
                                 }
                             }
-                            Err(e) => error!("Error reading {:?}: {}", path, e),
+                            Err(e) => warn!("Error reading {:?}: {}", path, e),
                         }
                     }
                 }
