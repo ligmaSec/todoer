@@ -1,9 +1,9 @@
 use colored::*;
 use ignore::Walk;
+use log::error;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 use std::path::Path;
-
 fn find_todos(path: &Path) -> io::Result<Vec<String>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
@@ -24,6 +24,8 @@ fn find_todos(path: &Path) -> io::Result<Vec<String>> {
 }
 
 fn main() -> io::Result<()> {
+    env_logger::init_from_env("LOG_LEVEL");
+
     for entry in Walk::new("./") {
         match entry {
             Ok(entry) => {
@@ -36,7 +38,7 @@ fn main() -> io::Result<()> {
                                     println!("{}", todo);
                                 }
                             }
-                            Err(e) => eprintln!("Error reading {:?}: {}", path, e),
+                            Err(e) => error!("Error reading {:?}: {}", path, e),
                         }
                     }
                 }
