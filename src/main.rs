@@ -1,3 +1,4 @@
+use colored::*;
 use ignore::Walk;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
@@ -11,7 +12,11 @@ fn find_todos(path: &Path) -> io::Result<Vec<String>> {
     for line in reader.lines() {
         let line = line?;
         if line.contains("TODO:") {
-            todos.push(format!("{}: {}", path.display(), line.trim().trim_start_matches("//TODO:")));
+            todos.push(format!(
+                "{}:{}",
+                path.display().to_string().cyan(),
+                line.trim().trim_start_matches("// TODO:")
+            ));
         }
     }
 
@@ -30,7 +35,7 @@ fn main() -> io::Result<()> {
                                 for todo in todos {
                                     println!("{}", todo);
                                 }
-                            },
+                            }
                             Err(e) => eprintln!("Error reading {:?}: {}", path, e),
                         }
                     }
