@@ -5,6 +5,8 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 use std::path::Path;
 
+
+// TODO: use treesitter for comments parsing
 const TODO_PREFIX: &str = "TODO:";
 
 fn trim_todo_prefix(line: &str) -> Option<String> {
